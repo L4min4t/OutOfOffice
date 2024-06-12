@@ -19,6 +19,9 @@ public class Employee : IEntity
     public int OutOfOfficeBalance { get; set; }
 
     public byte[]? Photo { get; set; }
+    
+    public int UserId { get; set; }
+    public User User { get; set; }
 }
 
 public enum EmployeeStatus

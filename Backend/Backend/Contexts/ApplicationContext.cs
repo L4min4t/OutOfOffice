@@ -1,3 +1,4 @@
+using Backend.Lists;
 using Backend.Lists.ApprovalRequests;
 using Backend.Lists.Employees;
 using Backend.Lists.LeaveRequests;
@@ -49,6 +50,11 @@ public class ApplicationContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.PeoplePartnerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.User)
+                .WithOne(u => u.Employee)
+                .HasForeignKey<Employee>(e => e.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<LeaveRequest>(entity =>
