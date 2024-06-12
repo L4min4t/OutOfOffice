@@ -1,4 +1,3 @@
-using Backend.Enums;
 using Backend.Lists.ApprovalRequests;
 using Backend.Lists.Employees;
 using Backend.Lists.LeaveRequests;
@@ -13,7 +12,7 @@ public class ApplicationContext : DbContext
     public DbSet<LeaveRequest> LeaveRequests { get; set; }
     public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
     public DbSet<Project> Projects { get; set; }
-    
+
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
     }
@@ -51,7 +50,7 @@ public class ApplicationContext : DbContext
                 .HasForeignKey(e => e.PeoplePartnerId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-        
+
         modelBuilder.Entity<LeaveRequest>(entity =>
         {
             entity.HasKey(a => a.Id);
@@ -82,7 +81,7 @@ public class ApplicationContext : DbContext
                 .HasDefaultValue(AbsenceRequestStatus.New)
                 .HasConversion<string>();
         });
-        
+
         modelBuilder.Entity<ApprovalRequest>(entity =>
         {
             entity.HasKey(l => l.Id);
@@ -111,7 +110,7 @@ public class ApplicationContext : DbContext
             entity.Property(l => l.Comment)
                 .HasMaxLength(500);
         });
-        
+
         modelBuilder.Entity<Project>(entity =>
         {
             entity.HasKey(p => p.Id);

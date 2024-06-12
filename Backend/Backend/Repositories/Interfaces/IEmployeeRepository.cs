@@ -5,5 +5,4 @@ namespace Backend.Repositories.Interfaces;
 
 public interface IEmployeeRepository : IBaseRepository<Employee>
 {
-    
 }

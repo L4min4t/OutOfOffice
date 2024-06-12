@@ -1,10 +1,9 @@
-using Backend.Enums;
 using Backend.Lists.Employees;
 using Backend.Lists.LeaveRequests;
 
 namespace Backend.Lists.ApprovalRequests;
 
-public class ApprovalRequest
+public class ApprovalRequest : IEntity
 {
     public int Id { get; set; }
 
@@ -17,4 +16,11 @@ public class ApprovalRequest
     public LeaveApprovalStatus Status { get; set; }
 
     public string Comment { get; set; }
+}
+
+public enum LeaveApprovalStatus
+{
+    New,
+    Approved,
+    Rejected
 }

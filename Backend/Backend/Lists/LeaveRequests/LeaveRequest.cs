@@ -1,9 +1,9 @@
-using Backend.Enums;
+
 using Backend.Lists.Employees;
 
 namespace Backend.Lists.LeaveRequests;
 
-public class LeaveRequest
+public class LeaveRequest : IEntity
 {
     public int Id { get; set; }
 
@@ -19,4 +19,21 @@ public class LeaveRequest
     public string Comment { get; set; }
 
     public AbsenceRequestStatus Status { get; set; }
+}
+
+public enum AbsenceReason
+{
+    SickLeave,
+    Vacation,
+    PersonalLeave,
+    MaternityLeave,
+    PaternityLeave
+}
+
+public enum AbsenceRequestStatus
+{
+    New,
+    Approved,
+    Rejected,
+    Cancelled
 }

@@ -1,9 +1,8 @@
-using Backend.Enums;
 using Backend.Lists.Employees;
 
 namespace Backend.Lists.Projects;
 
-public class Project
+public class Project : IEntity
 {
     public int Id { get; set; }
 
@@ -19,4 +18,19 @@ public class Project
     public string Comment { get; set; }
 
     public ProjectStatus Status { get; set; }
+}
+
+public enum ProjectStatus
+{
+    Active,
+    Inactive
+}
+
+public enum ProjectType
+{
+    Internal,
+    External,
+    Research,
+    Development,
+    Maintenance
 }

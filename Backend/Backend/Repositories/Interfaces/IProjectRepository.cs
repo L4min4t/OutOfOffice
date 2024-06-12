@@ -4,5 +4,4 @@ namespace Backend.Repositories.Interfaces;
 
 public interface IProjectRepository : IBaseRepository<Project>
 {
-    
 }
