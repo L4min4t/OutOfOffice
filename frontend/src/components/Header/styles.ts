@@ -25,6 +25,25 @@ export const Logo = styled.a`
     }
 `;
 
+export const NavLink = styled.a`
+    color: ${cssValues.textColor};
+    font-size: ${cssValues.subTitleFontSize};
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        color: ${cssValues.interactivaOnMainColor};
+        text-decoration: underline;
+    }
+`;
+
+export const NavLinkContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50%;
+`;
+
 export const Greeting = styled.h2`
     font-size: ${cssValues.subTitleFontSize};
 `;
@@ -36,5 +55,6 @@ export const UserName = styled.a`
 
     &:hover {
         color: ${cssValues.interactivaOnMainColor};
+        text-decoration: underline;
     }
 `;

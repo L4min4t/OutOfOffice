@@ -1,5 +1,5 @@
 import useAuthContext from "../../context/hooks";
-import {Greeting, HeaderContainer, Logo, UserName} from "./styles";
+import {Greeting, HeaderContainer, Logo, NavLink, NavLinkContainer, UserName} from "./styles";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import {toast} from "react-toastify";
@@ -17,7 +17,13 @@ const Header = () => {
 
     return (
         <HeaderContainer>
-            <Logo onClick={() => navigate("/")}>TradeMarket</Logo>
+            <Logo onClick={() => navigate("/")}>Out of Office</Logo>
+            <NavLinkContainer>
+                <NavLink onClick={() => navigate("/employees")}>employees</NavLink>
+                <NavLink onClick={() => navigate("/projects")}>projects</NavLink>
+                <NavLink onClick={() => navigate("/leave-requests")}>leave requests</NavLink>
+                <NavLink onClick={() => navigate("/approval-requests")}>approval requests</NavLink>
+            </NavLinkContainer>
             <Greeting>Hello, <UserName onClick={() => navigate("/user")}>{user?.name}</UserName>!</Greeting>
         </HeaderContainer>);
 }
