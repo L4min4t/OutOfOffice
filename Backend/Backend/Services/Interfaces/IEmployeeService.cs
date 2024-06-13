@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Backend.Lists.Employees;
 
-namespace Backend.Servises.Interfaces;
+namespace Backend.Services.Interfaces;
 
 public interface IEmployeeService : IBaseService<Employee>
 {

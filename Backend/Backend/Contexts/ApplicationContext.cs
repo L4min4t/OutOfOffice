@@ -29,11 +29,11 @@ public class ApplicationContext : DbContext
                 .HasMaxLength(100);
 
             entity.Property(e => e.Subdivision)
-                .IsRequired()
+                .IsRequired(false)
                 .HasConversion<string>();
 
             entity.Property(e => e.Position)
-                .IsRequired()
+                .IsRequired(false)
                 .HasConversion<string>();
 
             entity.Property(e => e.Status)
@@ -50,11 +50,6 @@ public class ApplicationContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.PeoplePartnerId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(e => e.User)
-                .WithOne(u => u.Employee)
-                .HasForeignKey<Employee>(e => e.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<LeaveRequest>(entity =>

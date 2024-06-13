@@ -1,6 +1,6 @@
 using Backend.Lists.LeaveRequests;
 
-namespace Backend.Servises.Interfaces;
+namespace Backend.Services.Interfaces;
 
 public interface ILeaveRequestService : IBaseService<LeaveRequest>
 {

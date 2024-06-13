@@ -1,9 +1,11 @@
 using Backend.Contexts;
 using Backend.Lists;
+using Backend.OptionsSetup;
 using Backend.Repositories.Implementations;
 using Backend.Repositories.Interfaces;
-using Backend.Servises.Implementations;
-using Backend.Servises.Interfaces;
+using Backend.Seeders;
+using Backend.Services.Implementations;
+using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +13,9 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationConnection")));
-
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationConnection")));
-
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<IdentityContext>()
+    .AddRoleManager<RoleManager<IdentityRole>>()
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders();
 
@@ -46,6 +43,12 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationConnection")));
+
+builder.Services.AddDbContext<IdentityContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -79,6 +82,12 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var user = await IdentityDBSeeder.Initialize(scope.ServiceProvider);
+    await ApplicationDbSeeder.Initialize(scope.ServiceProvider, user);
+}
 
 if (app.Environment.IsDevelopment())
 {

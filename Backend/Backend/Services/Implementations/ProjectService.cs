@@ -1,12 +1,12 @@
 using Backend.Lists.Projects;
 using Backend.Repositories.Interfaces;
-using Backend.Servises.Interfaces;
+using Backend.Services.Interfaces;
 
-namespace Backend.Servises.Implementations;
+namespace Backend.Services.Implementations;
 
 public class ProjectService : BaseService<Project>, IProjectService
 {
-    public ProjectService(IBaseRepository<Project> repository) : base(repository)
+    public ProjectService(IProjectRepository repository) : base(repository)
     {
     }
 }

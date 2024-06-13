@@ -15,4 +15,10 @@ public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     
     public virtual async Task<List<Employee>?> FindByConditionAsync(Expression<Func<Employee, bool>> expression) =>
         await DbSet.AsNoTracking().Where(expression).ToListAsync();
+
+    public async Task CreateAsync(Employee entity)
+    {
+        await DbSet.AddAsync(entity);
+        await Context.SaveChangesAsync();
+    }
 }

@@ -7,4 +7,5 @@ namespace Backend.Repositories.Interfaces;
 public interface IEmployeeRepository : IBaseRepository<Employee>
 {
     Task<List<Employee>?> FindByConditionAsync(Expression<Func<Employee, bool>> expression);
+    Task CreateAsync(Employee entity);
 }

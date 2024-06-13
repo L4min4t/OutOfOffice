@@ -2,9 +2,9 @@ using System.Linq.Expressions;
 using Backend.Lists;
 using Backend.Repositories.Interfaces;
 using Backend.ResultPattern;
-using Backend.Servises.Interfaces;
+using Backend.Services.Interfaces;
 
-namespace Backend.Servises.Implementations;
+namespace Backend.Services.Implementations;
 
 public class BaseService<B> : IBaseService<B>
     where B : class, IEntity

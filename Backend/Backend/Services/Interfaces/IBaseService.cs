@@ -1,6 +1,6 @@
 using Backend.ResultPattern;
 
-namespace Backend.Servises.Interfaces;
+namespace Backend.Services.Interfaces;
 
 public interface IBaseService<T>
     where T : class

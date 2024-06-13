@@ -1,12 +1,12 @@
 using Backend.Lists.LeaveRequests;
 using Backend.Repositories.Interfaces;
-using Backend.Servises.Interfaces;
+using Backend.Services.Interfaces;
 
-namespace Backend.Servises.Implementations;
+namespace Backend.Services.Implementations;
 
 public class LeaveRequestService : BaseService<LeaveRequest>, ILeaveRequestService
 {
-    public LeaveRequestService(IBaseRepository<LeaveRequest> repository) : base(repository)
+    public LeaveRequestService(ILeaveRequestRepository repository) : base(repository)
     {
     }
 }

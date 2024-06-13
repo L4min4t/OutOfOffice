@@ -2,7 +2,7 @@ using Backend.Lists;
 using Backend.Models.Token;
 using Backend.ResultPattern;
 
-namespace Backend.Servises.Implementations;
+namespace Backend.Services.Implementations;
 
 public interface IJwtService
 {

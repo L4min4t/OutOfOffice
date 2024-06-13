@@ -3,17 +3,17 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Backend.Lists;
+using Backend.Lists.Employees;
 using Backend.Models.Jwt;
 using Backend.Models.Token;
 using Backend.ResultPattern;
-using Backend.Servises.Interfaces;
+using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualBasic;
 
-namespace Backend.Servises.Implementations;
+namespace Backend.Services.Implementations;
 
 public class JwtService : IJwtService
 {
@@ -68,23 +68,23 @@ public class JwtService : IJwtService
     public async Task<Result<TokenModel>> RefreshTokenAsync(RefreshTokenModel tokenModel)
     {
         var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken);
-
+        
         if (principal?.FindFirstValue(ClaimTypes.Email) is null)
         {
             return Result<TokenModel>.Failure(HttpStatusCode.BadRequest, "The provided token is not valid!");
         }
-
-        var user = await _userManager.FindByEmailAsync(principal.FindFirstValue(ClaimTypes.Email)!);
-
+        
+        var user = await _userManager.FindByNameAsync(principal.FindFirstValue(ClaimTypes.Email)!);
+        
         if (user is null)
         {
             return Result<TokenModel>.Failure(HttpStatusCode.BadRequest,
                 $"The user with email {principal.FindFirstValue(ClaimTypes.Email)!} was not found!");
         }
-
+        
         if (user.RefreshToken != tokenModel.RefreshToken)
             return Result<TokenModel>.Failure(HttpStatusCode.BadRequest, "The provided refresh token is not valid.");
-
+        
         if (user.RefreshTokenExpiryTime <= DateTime.Now)
             return Result<TokenModel>.Failure(HttpStatusCode.BadRequest, "The provided refresh token is expired.");
 
@@ -104,7 +104,7 @@ public class JwtService : IJwtService
     private async Task<List<Claim>> GenerateUserClaims(User user)
     {
         var employee = (await _employeeService.FindByConditionAsync(
-            e => e.UserId == user.Id)).FirstOrDefault();
+            e => e.IdentityId == user.Id)).FirstOrDefault();
         
         var claims = new List<Claim>
         {
@@ -113,9 +113,8 @@ public class JwtService : IJwtService
             new(JwtRegisteredClaimNames.Email, user.Email!),
             new("id", employee.Id.ToString())
         };
-
+        
         var roles = await _userManager.GetRolesAsync(user);
-
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         return claims;

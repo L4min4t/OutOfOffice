@@ -3,10 +3,10 @@ using Backend.Lists;
 using Backend.Lists.Employees;
 using Backend.Repositories.Interfaces;
 using Backend.ResultPattern;
-using Backend.Servises.Interfaces;
+using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
-namespace Backend.Servises.Implementations;
+namespace Backend.Services.Implementations;
 
 public class EmployeeService : BaseService<Employee>, IEmployeeService
 {
