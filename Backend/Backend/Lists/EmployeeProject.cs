@@ -1,6 +1,5 @@
 using Backend.Lists.Employees;
 using Backend.Lists.Projects;
-using Backend.Repositories.Interfaces;
 
 namespace Backend.Lists;
 

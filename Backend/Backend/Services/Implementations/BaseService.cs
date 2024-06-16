@@ -51,7 +51,8 @@ public class BaseService<B> : IBaseService<B>
         {
             var entity = await Repository.FindByIdAsync(id);
             
-            if (entity is null) return Result<int>.Fail("No data to delete found!");
+            if (entity is null)
+                return Result<int>.Fail("No data to delete found!");
             
             await Repository.DeleteAsync(entity);
             

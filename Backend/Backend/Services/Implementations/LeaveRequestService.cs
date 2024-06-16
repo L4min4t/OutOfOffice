@@ -4,7 +4,8 @@ using Backend.Services.Interfaces;
 
 namespace Backend.Services.Implementations;
 
-public class LeaveRequestService : BaseService<LeaveRequest>, ILeaveRequestService
+public class LeaveRequestService
+    : BaseService<LeaveRequest>, ILeaveRequestService
 {
     public LeaveRequestService(ILeaveRequestRepository repository)
         : base(repository)

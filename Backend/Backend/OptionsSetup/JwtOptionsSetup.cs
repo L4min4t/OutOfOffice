@@ -16,6 +16,7 @@ public class JwtOptionsSetup : IConfigureOptions<JwtOptions>
     
     public void Configure(JwtOptions options)
     {
-        _configuration.GetSection(SectionName).Bind(options);
+        _configuration.GetSection(SectionName)
+            .Bind(options);
     }
 }

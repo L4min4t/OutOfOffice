@@ -36,7 +36,8 @@ public class AuthController : ControllerBase
     [HttpPost("[action]")]
     
     // [Authorize]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel param)
+    public async Task<IActionResult> ChangePassword
+        ([FromBody] ChangePasswordModel param)
     {
         var result = await _service.ChangePasswordAsync(param);
         return result.IsSuccess

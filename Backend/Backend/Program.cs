@@ -11,14 +11,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(
+builder.Services.AddCors
+(
     options =>
     {
-        options.AddPolicy(
-            "AllowAll", builder =>
+        options.AddPolicy
+        (
+            "AllowAll",
+            builder =>
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
@@ -33,8 +37,10 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-builder.Services.AddScoped<IApprovalRequestRepository, ApprovalRequestRepository>();
-builder.Services.AddScoped<IEmployeeProjectRepository, EmployeeProjectRepository>();
+builder.Services
+    .AddScoped<IApprovalRequestRepository, ApprovalRequestRepository>();
+builder.Services
+    .AddScoped<IEmployeeProjectRepository, EmployeeProjectRepository>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -47,40 +53,59 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 
-builder.Services
-    .AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<IdentityContext>()
     .AddRoleManager<RoleManager<IdentityRole>>()
     .AddRoles<IdentityRole>()
     .AddDefaultTokenProviders();
 
-builder.Services
-    .AddAuthentication(
+builder.Services.AddAuthentication
+    (
         options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme =
+                JwtBearerDefaults.AuthenticationScheme;
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }
     )
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
-builder.Services.AddDbContext<ApplicationContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationConnection"))
+builder.Services.AddDbContext<ApplicationContext>
+(
+    options => options.UseSqlServer
+        (builder.Configuration.GetConnectionString("ApplicationConnection"))
 );
 
-builder.Services.AddDbContext<IdentityContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"))
+builder.Services.AddDbContext<IdentityContext>
+(
+    options => options.UseSqlServer
+        (builder.Configuration.GetConnectionString("IdentityConnection"))
 );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson
+    (
+        options =>
+        {
+            options.SerializerSettings.ReferenceLoopHandling =
+                ReferenceLoopHandling.Ignore;
+            options.SerializerSettings.NullValueHandling =
+                NullValueHandling.Ignore;
+            options.SerializerSettings.Formatting = Formatting.Indented;
+        }
+    );
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
+builder.Services.AddSwaggerGen
+(
     opt =>
     {
-        opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Out of Office", Version = "v1" });
-        opt.AddSecurityDefinition(
+        opt.SwaggerDoc
+            ("v1", new OpenApiInfo { Title = "Out of Office", Version = "v1" });
+        opt.AddSecurityDefinition
+        (
             "Bearer",
             new OpenApiSecurityScheme
             {
@@ -93,13 +118,17 @@ builder.Services.AddSwaggerGen(
             }
         );
         
-        opt.AddSecurityRequirement(
+        opt.AddSecurityRequirement
+        (
             new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme, Id = "Bearer"
+                        }
                     },
                     new string[] { }
                 }

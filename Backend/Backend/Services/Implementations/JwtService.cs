@@ -21,8 +21,11 @@ public class JwtService : IJwtService
     private readonly JwtOptions _jwtOptions;
     private readonly UserManager<User> _userManager;
     
-    public JwtService(
-        IOptions<JwtOptions> jwtSettings, UserManager<User> userManager, IOptions<JwtBearerOptions> jwtBearerOptions,
+    public JwtService
+    (
+        IOptions<JwtOptions> jwtSettings,
+        UserManager<User> userManager,
+        IOptions<JwtBearerOptions> jwtBearerOptions,
         IEmployeeRepository employeeRepository
     )
     {
@@ -41,9 +44,12 @@ public class JwtService : IJwtService
         var descriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddMinutes(Constants.Constants.AccessTokenLifetimeInMinutes),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
+            Expires = DateTime.Now.AddMinutes
+                (Constants.Constants.AccessTokenLifetimeInMinutes),
+            SigningCredentials = new SigningCredentials
+            (
+                new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
                 SecurityAlgorithms.HmacSha256
             ),
             Issuer = _jwtOptions.Issuer,
@@ -56,32 +62,42 @@ public class JwtService : IJwtService
         
         var refreshToken = GenerateRefreshToken();
         
-        user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(Constants.Constants.RefreshTokenLifetimeInMinutes);
+        user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes
+            (Constants.Constants.RefreshTokenLifetimeInMinutes);
         user.RefreshToken = refreshToken;
         await _userManager.UpdateAsync(user);
         
-        return Result<TokenModel>.Success(new TokenModel { AccessToken = accessToken, RefreshToken = refreshToken });
+        return Result<TokenModel>.Success
+        (
+            new TokenModel
+                { AccessToken = accessToken, RefreshToken = refreshToken }
+        );
     }
     
-    public async Task<Result<TokenModel>> RefreshTokenAsync(RefreshTokenModel tokenModel)
+    public async Task<Result<TokenModel>> RefreshTokenAsync
+        (RefreshTokenModel tokenModel)
     {
         var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken);
         
         if (principal?.FindFirstValue(ClaimTypes.Email) is null)
             return Result<TokenModel>.Fail("The provided token is not valid!");
         
-        var user = await _userManager.FindByNameAsync(principal.FindFirstValue(ClaimTypes.Email)!);
+        var user = await _userManager.FindByNameAsync
+            (principal.FindFirstValue(ClaimTypes.Email)!);
         
         if (user is null)
-            return Result<TokenModel>.Fail(
+            return Result<TokenModel>.Fail
+            (
                 $"The user with email {principal.FindFirstValue(ClaimTypes.Email)!} was not found!"
             );
         
         if (user.RefreshToken != tokenModel.RefreshToken)
-            return Result<TokenModel>.Fail("The provided refresh token is not valid.");
+            return Result<TokenModel>.Fail
+                ("The provided refresh token is not valid.");
         
         if (user.RefreshTokenExpiryTime <= DateTime.Now)
-            return Result<TokenModel>.Fail("The provided refresh token is expired.");
+            return Result<TokenModel>.Fail
+                ("The provided refresh token is expired.");
         
         return await GenerateTokenPairAsync(user);
     }
@@ -98,12 +114,18 @@ public class JwtService : IJwtService
     
     private async Task<List<Claim>> GenerateUserClaims(User user)
     {
-        var employee = (await _employeeRepository.FindByConditionAsync(e => e.IdentityId == user.Id)).FirstOrDefault();
+        var employee = (await _employeeRepository.FindByConditionAsync
+            (e => e.IdentityId == user.Id)).FirstOrDefault();
         
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.UserName),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new
+            (
+                JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid()
+                    .ToString()
+            ),
             new(JwtRegisteredClaimNames.Email, user.Email!),
             new("id", employee.Id.ToString())
         };
@@ -118,8 +140,11 @@ public class JwtService : IJwtService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         
-        var principal = tokenHandler.ValidateToken(
-            token, _jwtBearerOptions.TokenValidationParameters, out var securityToken
+        var principal = tokenHandler.ValidateToken
+        (
+            token,
+            _jwtBearerOptions.TokenValidationParameters,
+            out var securityToken
         );
         
         return CheckSecurityToken(securityToken)
@@ -129,8 +154,11 @@ public class JwtService : IJwtService
     
     private static bool CheckSecurityToken(SecurityToken securityToken)
     {
-        return securityToken is JwtSecurityToken jwtSecurityToken && jwtSecurityToken.Header.Alg.Equals(
-            SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase
-        );
+        return securityToken is JwtSecurityToken jwtSecurityToken &&
+               jwtSecurityToken.Header.Alg.Equals
+               (
+                   SecurityAlgorithms.HmacSha256,
+                   StringComparison.InvariantCultureIgnoreCase
+               );
     }
 }

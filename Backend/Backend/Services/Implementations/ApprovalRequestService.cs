@@ -4,7 +4,8 @@ using Backend.Services.Interfaces;
 
 namespace Backend.Services.Implementations;
 
-public class ApprovalRequestService : BaseService<ApprovalRequest>, IApprovalRequestService
+public class ApprovalRequestService
+    : BaseService<ApprovalRequest>, IApprovalRequestService
 {
     public ApprovalRequestService(IApprovalRequestRepository repository)
         : base(repository)

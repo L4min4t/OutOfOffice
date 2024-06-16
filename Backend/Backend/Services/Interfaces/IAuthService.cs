@@ -8,7 +8,9 @@ namespace Backend.Services.Interfaces;
 
 public interface IAuthService
 {
-    Task<Result<(IdentityResult, Employee)>> RegisterUserAsync(RegisterModel model);
+    Task<Result<(IdentityResult, Employee)>> RegisterUserAsync
+        (RegisterModel model);
+    
     Task<Result<TokenModel>> LoginUserAsync(LoginModel model);
     Task<Result<TokenModel>> ChangePasswordAsync(ChangePasswordModel model);
 }

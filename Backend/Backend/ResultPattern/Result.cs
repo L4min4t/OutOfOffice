@@ -4,7 +4,8 @@ public class Result
 {
     protected Result(bool isSuccess, List<string> errorMessages = null)
     {
-        (IsSuccess, ErrorMessages) = (isSuccess, errorMessages ?? new List<string>());
+        (IsSuccess, ErrorMessages) =
+            (isSuccess, errorMessages ?? new List<string>());
     }
     
     public bool IsSuccess { get; protected set; }
@@ -33,7 +34,8 @@ public class Result
 
 public class Result<T> : Result
 {
-    private Result(bool isSuccess, T value = default, List<string> errorMessages = null)
+    private Result
+        (bool isSuccess, T value = default, List<string> errorMessages = null)
         : base(isSuccess, errorMessages)
     {
         Value = value;

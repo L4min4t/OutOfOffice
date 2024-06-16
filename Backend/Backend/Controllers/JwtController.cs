@@ -16,7 +16,8 @@ public class JwtController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel param)
+    public async Task<IActionResult> RefreshToken
+        ([FromBody] RefreshTokenModel param)
     {
         var result = await _service.RefreshTokenAsync(param);
         return result.IsSuccess

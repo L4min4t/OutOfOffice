@@ -27,9 +27,12 @@ public abstract class BaseRepository<T> : IBaseRepository<T>
         return await DbSet.FindAsync(id);
     }
     
-    public virtual async Task<List<T>?> FindByConditionAsync(Expression<Func<T, bool>> expression)
+    public virtual async Task<List<T>?> FindByConditionAsync
+        (Expression<Func<T, bool>> expression)
     {
-        return await DbSet.AsNoTracking().Where(expression).ToListAsync();
+        return await DbSet.AsNoTracking()
+            .Where(expression)
+            .ToListAsync();
     }
     
     public virtual async Task CreateAsync(T entity)
@@ -41,7 +44,8 @@ public abstract class BaseRepository<T> : IBaseRepository<T>
     public virtual async Task UpdateAsync(T entity)
     {
         DbSet.Attach(entity);
-        Context.Entry(entity).State = EntityState.Modified;
+        Context.Entry(entity)
+            .State = EntityState.Modified;
         await Context.SaveChangesAsync();
     }
     

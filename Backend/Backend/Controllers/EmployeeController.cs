@@ -24,10 +24,28 @@ public class EmployeeController : ControllerBase
             : BadRequest(result.ErrorMessages);
     }
     
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get([FromRoute] int id)
+    {
+        var result = await _employeeService.FindByIdAsync(id);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.ErrorMessages);
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateEmployeeDto model)
     {
         var result = await _employeeService.CreateAsync(model);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.ErrorMessages);
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateEmployeeDto model)
+    {
+        var result = await _employeeService.UpdateAsync(model);
         return result.IsSuccess
             ? Ok(result.Value)
             : BadRequest(result.ErrorMessages);

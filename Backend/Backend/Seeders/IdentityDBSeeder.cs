@@ -7,14 +7,17 @@ public static class IdentityDBSeeder
 {
     public static async Task<User?> Initialize(IServiceProvider serviceProvider)
     {
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = serviceProvider
+            .GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager =
+            serviceProvider.GetRequiredService<UserManager<User>>();
         
         await SeedRolesAsync(roleManager);
         return await SeedTestUserAsync(userManager);
     }
     
-    private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
+    private static async Task SeedRolesAsync
+        (RoleManager<IdentityRole> roleManager)
     {
         string[] roleNames = { "Admin", "User", "HR", "PM" };
         
@@ -22,11 +25,13 @@ public static class IdentityDBSeeder
         {
             var roleExist = await roleManager.RoleExistsAsync(roleName);
             
-            if (!roleExist) await roleManager.CreateAsync(new IdentityRole(roleName));
+            if (!roleExist)
+                await roleManager.CreateAsync(new IdentityRole(roleName));
         }
     }
     
-    private static async Task<User?> SeedTestUserAsync(UserManager<User> userManager)
+    private static async Task<User?> SeedTestUserAsync
+        (UserManager<User> userManager)
     {
         const string email = "admin@google.com";
         const string userName = "administrator";
@@ -34,7 +39,8 @@ public static class IdentityDBSeeder
         
         if (await userManager.FindByEmailAsync(email) == null)
         {
-            var user = new User { FullName = userName, UserName = email, Email = email };
+            var user = new User
+                { FullName = userName, UserName = email, Email = email };
             
             var result = await userManager.CreateAsync(user, password);
             
@@ -42,7 +48,8 @@ public static class IdentityDBSeeder
             {
                 string[] roleNames = { "Admin", "User", "HR", "PM" };
                 
-                foreach (var roleName in roleNames) await userManager.AddToRoleAsync(user, roleName);
+                foreach (var roleName in roleNames)
+                    await userManager.AddToRoleAsync(user, roleName);
                 
                 return user;
             }

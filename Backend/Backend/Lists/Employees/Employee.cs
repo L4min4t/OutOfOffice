@@ -17,7 +17,9 @@ public class Employee : IEntity
     
     public string IdentityId { get; set; }
     
-    public ICollection<EmployeeProject> EmployeeProjects { get; set; } = new List<EmployeeProject>();
+    public ICollection<EmployeeProject> EmployeeProjects { get; set; } =
+        new List<EmployeeProject>();
+    
     public int Id { get; set; }
 }
 

@@ -16,8 +16,11 @@ public class AuthService : IAuthService
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
     
-    public AuthService(
-        IJwtService tokenService, SignInManager<User> signInManager, UserManager<User> userManager,
+    public AuthService
+    (
+        IJwtService tokenService,
+        SignInManager<User> signInManager,
+        UserManager<User> userManager,
         IEmployeeRepository employeeRepository
     )
     {
@@ -27,18 +30,25 @@ public class AuthService : IAuthService
         _employeeRepository = employeeRepository;
     }
     
-    public async Task<Result<(IdentityResult, Employee)>> RegisterUserAsync(RegisterModel model)
+    public async Task<Result<(IdentityResult, Employee)>> RegisterUserAsync
+        (RegisterModel model)
     {
         try
         {
             var user = await _userManager.FindByNameAsync(model.Email);
             
             if (user is not null)
-                return Result<(IdentityResult, Employee)>.Fail($"User with {model.Email} already exists!");
+                return Result<(IdentityResult, Employee)>.Fail
+                    ($"User with {model.Email} already exists!");
             
-            user = new User { FullName = model.Name, UserName = model.Email, Email = model.Email };
+            user = new User
+            {
+                FullName = model.Name, UserName = model.Email,
+                Email = model.Email
+            };
             
-            var identityResult = await _userManager.CreateAsync(user, model.Password);
+            var identityResult = await _userManager.CreateAsync
+                (user, model.Password);
             
             if (identityResult.Succeeded)
             {
@@ -48,10 +58,12 @@ public class AuthService : IAuthService
                 
                 return applicationResult.IsSuccess
                     ? Result.Success((identityResult, applicationResult.Value))
-                    : Result<(IdentityResult, Employee)>.Fail(applicationResult.ErrorMessages);
+                    : Result<(IdentityResult, Employee)>.Fail
+                        (applicationResult.ErrorMessages);
             }
             
-            return Result<(IdentityResult, Employee)>.Fail($"Register failed: {identityResult.Errors}");
+            return Result<(IdentityResult, Employee)>.Fail
+                ($"Register failed: {identityResult.Errors}");
         }
         catch (Exception)
         {
@@ -66,9 +78,11 @@ public class AuthService : IAuthService
             var user = await _userManager.FindByNameAsync(model.Email);
             
             if (user is null)
-                return Result<TokenModel>.Fail($"The user with {model.Email} doesn't exist!");
+                return Result<TokenModel>.Fail
+                    ($"The user with {model.Email} doesn't exist!");
             
-            var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+            var signInResult = await _signInManager.PasswordSignInAsync
+                (user, model.Password, false, false);
             
             return signInResult.Succeeded
                 ? await _jwtService.GenerateTokenPairAsync(user)
@@ -80,27 +94,31 @@ public class AuthService : IAuthService
         }
     }
     
-    public async Task<Result<TokenModel>> ChangePasswordAsync(ChangePasswordModel model)
+    public async Task<Result<TokenModel>> ChangePasswordAsync
+        (ChangePasswordModel model)
     {
         try
         {
             var user = await _userManager.FindByNameAsync(model.Email);
             
             if (user is null)
-                return Result<TokenModel>.Fail($"The user with {model.Email} doesn't exist!");
+                return Result<TokenModel>.Fail
+                    ($"The user with {model.Email} doesn't exist!");
             
-            var passwordCheck = _userManager.PasswordHasher.VerifyHashedPassword(
-                user, user.PasswordHash!, model.OldPassword
-            );
+            var passwordCheck = _userManager.PasswordHasher.VerifyHashedPassword
+                (user, user.PasswordHash!, model.OldPassword);
             
             if (passwordCheck is PasswordVerificationResult.Failed)
-                return Result<TokenModel>.Fail("The old password is not correct!");
+                return Result<TokenModel>.Fail
+                    ("The old password is not correct!");
             
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword
+                (user, model.NewPassword);
             
             var updateResult = await _userManager.UpdateAsync(user);
             
-            if (updateResult.Succeeded) return await _jwtService.GenerateTokenPairAsync(user);
+            if (updateResult.Succeeded)
+                return await _jwtService.GenerateTokenPairAsync(user);
             
             return Result<TokenModel>.Fail("Invalid change password attempt!");
         }
@@ -114,11 +132,15 @@ public class AuthService : IAuthService
     {
         try
         {
-            var entity =
-                (await _employeeRepository.FindByConditionAsync(e => e.IdentityId == user.Id))?.FirstOrDefault();
+            var entity = (await _employeeRepository.FindByConditionAsync
+                (e => e.IdentityId == user.Id))?.FirstOrDefault();
             if (entity is null)
             {
-                var employee = new Employee { FullName = user.UserName ?? "name to setted", IdentityId = user.Id };
+                var employee = new Employee
+                {
+                    FullName = user.UserName ?? "name to setted",
+                    IdentityId = user.Id
+                };
                 
                 await _employeeRepository.CreateAsync(employee);
                 

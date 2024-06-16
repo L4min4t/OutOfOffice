@@ -22,7 +22,8 @@ public class ApplicationContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Employee>(
+        modelBuilder.Entity<Employee>
+        (
             entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -59,7 +60,8 @@ public class ApplicationContext : DbContext
             }
         );
         
-        modelBuilder.Entity<LeaveRequest>(
+        modelBuilder.Entity<LeaveRequest>
+        (
             entity =>
             {
                 entity.HasKey(l => l.Id);
@@ -93,7 +95,8 @@ public class ApplicationContext : DbContext
             }
         );
         
-        modelBuilder.Entity<ApprovalRequest>(
+        modelBuilder.Entity<ApprovalRequest>
+        (
             entity =>
             {
                 entity.HasKey(a => a.Id);
@@ -125,7 +128,8 @@ public class ApplicationContext : DbContext
             }
         );
         
-        modelBuilder.Entity<Project>(
+        modelBuilder.Entity<Project>
+        (
             entity =>
             {
                 entity.HasKey(p => p.Id);
@@ -163,12 +167,13 @@ public class ApplicationContext : DbContext
             }
         );
         
-        modelBuilder.Entity<EmployeeProject>(
+        modelBuilder.Entity<EmployeeProject>
+        (
             entity =>
             {
                 entity.HasKey(ep => ep.Id);
                 
-                entity.HasKey(ep => new { ep.EmployeeId, ep.ProjectId });
+                entity.HasIndex(ep => new { ep.EmployeeId, ep.ProjectId });
                 
                 entity.HasOne(ep => ep.Employee)
                     .WithMany(e => e.EmployeeProjects)
