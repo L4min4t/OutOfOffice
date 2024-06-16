@@ -30,6 +30,8 @@ export const NavLink = styled.a`
     font-size: ${cssValues.subTitleFontSize};
     font-weight: 600;
     cursor: pointer;
+    text-align: center;
+    align-self: center;
 
     &:hover {
         color: ${cssValues.interactivaOnMainColor};
@@ -42,6 +44,7 @@ export const NavLinkContainer = styled.div`
     flex-direction: row;
     justify-content: space-between;
     width: 50%;
+    height: 100%;
 `;
 
 export const Greeting = styled.h2`

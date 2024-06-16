@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Backend.Lists;
 using Backend.Repositories.Interfaces;
 using Backend.ResultPattern;
@@ -10,66 +9,57 @@ public class BaseService<B> : IBaseService<B>
     where B : class, IEntity
 {
     protected readonly IBaseRepository<B> Repository;
-
+    
     public BaseService(IBaseRepository<B> repository)
     {
         Repository = repository;
     }
-
+    
     public virtual async Task<Result<List<B>?>> FindAllAsync()
     {
         try
         {
             var entities = await Repository.FindAllAsync();
-            if (!entities.Any())
-            {
-                return Result<List<B>?>.Failure(HttpStatusCode.NoContent, "There is no data!");
-            }
-
-            return Result<List<B>?>.Success(entities);
+            return entities.Any()
+                ? Result.Success(entities)
+                : Result.Success(new List<B>());
         }
         catch (Exception ex)
         {
-            return Result<List<B>?>.Failure(HttpStatusCode.InternalServerError, ex.Message);
+            return Result<List<B>?>.Fail(ex.Message);
         }
     }
-
-
+    
     public async Task<Result<B?>> FindByIdAsync(int id)
     {
         try
         {
             var entity = await Repository.FindByIdAsync(id);
-            if (entity is null)
-            {
-                return Result<B?>.Failure(HttpStatusCode.NoContent, "There is no data!");
-            }
-
-            return Result<B?>.Success(entity);
+            return entity is null
+                ? Result<B?>.Success(null)
+                : Result<B?>.Success(entity);
         }
         catch (Exception ex)
         {
-            return Result<B?>.Failure(HttpStatusCode.InternalServerError, ex.Message);
+            return Result<B?>.Fail(ex.Message);
         }
     }
-
+    
     public async Task<Result<int>> DeleteAsync(int id)
     {
         try
         {
             var entity = await Repository.FindByIdAsync(id);
-            if (entity is null)
-            {
-                return Result<int>.Failure(HttpStatusCode.NoContent, "There is no data!");
-            }
-
+            
+            if (entity is null) return Result<int>.Fail("No data to delete found!");
+            
             await Repository.DeleteAsync(entity);
-
-            return Result<int>.Success(entity.Id);
+            
+            return Result<int>.Success(id);
         }
         catch (Exception ex)
         {
-            return Result<int>.Failure(HttpStatusCode.InternalServerError, ex.Message);
+            return Result<int>.Fail(ex.Message);
         }
     }
 }

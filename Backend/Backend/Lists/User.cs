@@ -1,4 +1,3 @@
-using Backend.Lists.Employees;
 using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Lists;

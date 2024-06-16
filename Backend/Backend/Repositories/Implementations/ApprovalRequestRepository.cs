@@ -6,7 +6,8 @@ namespace Backend.Repositories.Implementations;
 
 public class ApprovalRequestRepository : BaseRepository<ApprovalRequest>, IApprovalRequestRepository
 {
-    public ApprovalRequestRepository(ApplicationContext context) : base(context)
+    public ApprovalRequestRepository(ApplicationContext context)
+        : base(context)
     {
     }
 }

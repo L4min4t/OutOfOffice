@@ -6,7 +6,8 @@ namespace Backend.Repositories.Implementations;
 
 public class ProjectRepository : BaseRepository<Project>, IProjectRepository
 {
-    public ProjectRepository(ApplicationContext context) : base(context)
+    public ProjectRepository(ApplicationContext context)
+        : base(context)
     {
     }
 }

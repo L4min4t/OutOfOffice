@@ -4,5 +4,6 @@ namespace Backend.Models.Token;
 
 public class RefreshTokenModel : TokenModel
 {
-    [Required] public string Email { get; set; }
+    [Required]
+    public string Email { get; set; }
 }

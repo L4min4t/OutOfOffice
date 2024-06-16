@@ -34,7 +34,6 @@ namespace Backend.Migrations.Application
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -56,6 +55,21 @@ namespace Backend.Migrations.Application
                     b.ToTable("ApprovalRequests");
                 });
 
+            modelBuilder.Entity("Backend.Lists.EmployeeProject", b =>
+                {
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EmployeeId", "ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("EmployeeProjects");
+                });
+
             modelBuilder.Entity("Backend.Lists.Employees.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -66,15 +80,17 @@ namespace Backend.Migrations.Application
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("IdentityId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OutOfOfficeBalance")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int?>("PeoplePartnerId")
                         .HasColumnType("int");
@@ -83,14 +99,20 @@ namespace Backend.Migrations.Application
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Position")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Developer");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Active");
 
                     b.Property<string>("Subdivision")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("IT");
 
                     b.HasKey("Id");
 
@@ -112,7 +134,6 @@ namespace Backend.Migrations.Application
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -147,7 +168,6 @@ namespace Backend.Migrations.Application
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -159,14 +179,18 @@ namespace Backend.Migrations.Application
 
                     b.Property<string>("ProjectType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Development");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Active");
 
                     b.HasKey("Id");
 
@@ -192,6 +216,25 @@ namespace Backend.Migrations.Application
                     b.Navigation("Approver");
 
                     b.Navigation("LeaveRequest");
+                });
+
+            modelBuilder.Entity("Backend.Lists.EmployeeProject", b =>
+                {
+                    b.HasOne("Backend.Lists.Employees.Employee", "Employee")
+                        .WithMany("EmployeeProjects")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Lists.Projects.Project", "Project")
+                        .WithMany("EmployeeProjects")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Backend.Lists.Employees.Employee", b =>
@@ -225,6 +268,16 @@ namespace Backend.Migrations.Application
                         .HasConstraintName("FK_Project_ProjectManager");
 
                     b.Navigation("ProjectManager");
+                });
+
+            modelBuilder.Entity("Backend.Lists.Employees.Employee", b =>
+                {
+                    b.Navigation("EmployeeProjects");
+                });
+
+            modelBuilder.Entity("Backend.Lists.Projects.Project", b =>
+                {
+                    b.Navigation("EmployeeProjects");
                 });
 #pragma warning restore 612, 618
         }

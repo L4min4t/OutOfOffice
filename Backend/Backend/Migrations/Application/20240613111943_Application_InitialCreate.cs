@@ -1,158 +1,123 @@
-﻿using System;
+﻿#nullable disable
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
+namespace Backend.Migrations.Application;
 
-namespace Backend.Migrations.Application
+/// <inheritdoc />
+public partial class Application_InitialCreate : Migration
 {
     /// <inheritdoc />
-    public partial class Application_InitialCreate : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Subdivision = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Position = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PeoplePartnerId = table.Column<int>(type: "int", nullable: true),
-                    OutOfOfficeBalance = table.Column<int>(type: "int", nullable: false),
-                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    IdentityId = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Employees_Employees_PeoplePartnerId",
-                        column: x => x.PeoplePartnerId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LeaveRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false),
-                    AbsenceReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "New")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LeaveRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LeaveRequests_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ProjectManagerId = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Project_ProjectManager",
-                        column: x => x.ProjectManagerId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ApprovalRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ApproverId = table.Column<int>(type: "int", nullable: false),
-                    LeaveRequestId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "New"),
-                    Comment = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApprovalRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ApprovalRequests_Employees_ApproverId",
-                        column: x => x.ApproverId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ApprovalRequests_LeaveRequests_LeaveRequestId",
-                        column: x => x.LeaveRequestId,
-                        principalTable: "LeaveRequests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApprovalRequests_ApproverId",
-                table: "ApprovalRequests",
-                column: "ApproverId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApprovalRequests_LeaveRequestId",
-                table: "ApprovalRequests",
-                column: "LeaveRequestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_PeoplePartnerId",
-                table: "Employees",
-                column: "PeoplePartnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LeaveRequests_EmployeeId",
-                table: "LeaveRequests",
-                column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_ProjectManagerId",
-                table: "Projects",
-                column: "ProjectManagerId");
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "ApprovalRequests");
-
-            migrationBuilder.DropTable(
-                name: "Projects");
-
-            migrationBuilder.DropTable(
-                name: "LeaveRequests");
-
-            migrationBuilder.DropTable(
-                name: "Employees");
-        }
+        migrationBuilder.CreateTable(
+            "Employees",
+            table => new
+            {
+                Id = table.Column<int>("int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                FullName = table.Column<string>("nvarchar(100)", maxLength: 100, nullable: false),
+                Subdivision = table.Column<string>("nvarchar(max)", nullable: true),
+                Position = table.Column<string>("nvarchar(max)", nullable: true),
+                Status = table.Column<string>("nvarchar(max)", nullable: false),
+                PeoplePartnerId = table.Column<int>("int", nullable: true),
+                OutOfOfficeBalance = table.Column<int>("int", nullable: false),
+                Photo = table.Column<byte[]>("varbinary(max)", nullable: true),
+                IdentityId = table.Column<string>("nvarchar(max)", nullable: false)
+            }, constraints: table =>
+            {
+                table.PrimaryKey("PK_Employees", x => x.Id);
+                table.ForeignKey(
+                    "FK_Employees_Employees_PeoplePartnerId", x => x.PeoplePartnerId, "Employees", "Id",
+                    onDelete: ReferentialAction.Restrict
+                );
+            }
+        );
+        
+        migrationBuilder.CreateTable(
+            "LeaveRequests",
+            table => new
+            {
+                Id = table.Column<int>("int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                EmployeeId = table.Column<int>("int", nullable: false),
+                AbsenceReason = table.Column<string>("nvarchar(max)", nullable: false),
+                StartDate = table.Column<DateTime>("datetime2", nullable: false),
+                EndDate = table.Column<DateTime>("datetime2", nullable: false),
+                Comment = table.Column<string>("nvarchar(500)", maxLength: 500, nullable: false),
+                Status = table.Column<string>("nvarchar(max)", nullable: false, defaultValue: "New")
+            }, constraints: table =>
+            {
+                table.PrimaryKey("PK_LeaveRequests", x => x.Id);
+                table.ForeignKey(
+                    "FK_LeaveRequests_Employees_EmployeeId", x => x.EmployeeId, "Employees", "Id",
+                    onDelete: ReferentialAction.Restrict
+                );
+            }
+        );
+        
+        migrationBuilder.CreateTable(
+            "Projects",
+            table => new
+            {
+                Id = table.Column<int>("int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                ProjectType = table.Column<string>("nvarchar(max)", nullable: false),
+                StartDate = table.Column<DateTime>("datetime2", nullable: false),
+                EndDate = table.Column<DateTime>("datetime2", nullable: true),
+                ProjectManagerId = table.Column<int>("int", nullable: false),
+                Comment = table.Column<string>("nvarchar(500)", maxLength: 500, nullable: false),
+                Status = table.Column<string>("nvarchar(max)", nullable: false)
+            }, constraints: table =>
+            {
+                table.PrimaryKey("PK_Projects", x => x.Id);
+                table.ForeignKey(
+                    "FK_Project_ProjectManager", x => x.ProjectManagerId, "Employees", "Id",
+                    onDelete: ReferentialAction.Restrict
+                );
+            }
+        );
+        
+        migrationBuilder.CreateTable(
+            "ApprovalRequests",
+            table => new
+            {
+                Id = table.Column<int>("int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                ApproverId = table.Column<int>("int", nullable: false),
+                LeaveRequestId = table.Column<int>("int", nullable: false),
+                Status = table.Column<string>("nvarchar(max)", nullable: false, defaultValue: "New"),
+                Comment = table.Column<string>("nvarchar(500)", maxLength: 500, nullable: false)
+            }, constraints: table =>
+            {
+                table.PrimaryKey("PK_ApprovalRequests", x => x.Id);
+                table.ForeignKey(
+                    "FK_ApprovalRequests_Employees_ApproverId", x => x.ApproverId, "Employees", "Id",
+                    onDelete: ReferentialAction.Restrict
+                );
+                table.ForeignKey(
+                    "FK_ApprovalRequests_LeaveRequests_LeaveRequestId", x => x.LeaveRequestId, "LeaveRequests", "Id",
+                    onDelete: ReferentialAction.Restrict
+                );
+            }
+        );
+        
+        migrationBuilder.CreateIndex("IX_ApprovalRequests_ApproverId", "ApprovalRequests", "ApproverId");
+        
+        migrationBuilder.CreateIndex("IX_ApprovalRequests_LeaveRequestId", "ApprovalRequests", "LeaveRequestId");
+        
+        migrationBuilder.CreateIndex("IX_Employees_PeoplePartnerId", "Employees", "PeoplePartnerId");
+        
+        migrationBuilder.CreateIndex("IX_LeaveRequests_EmployeeId", "LeaveRequests", "EmployeeId");
+        
+        migrationBuilder.CreateIndex("IX_Projects_ProjectManagerId", "Projects", "ProjectManagerId");
+    }
+    
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable("ApprovalRequests");
+        
+        migrationBuilder.DropTable("Projects");
+        
+        migrationBuilder.DropTable("LeaveRequests");
+        
+        migrationBuilder.DropTable("Employees");
     }
 }

@@ -7,5 +7,8 @@ namespace Backend.Controllers;
 public class HomeController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Test() => Ok(new { Message = "Test" });
+    public IActionResult Test()
+    {
+        return Ok(new { Message = "Test" });
+    }
 }

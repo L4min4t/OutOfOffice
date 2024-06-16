@@ -1,0 +1,14 @@
+using AutoMapper;
+using Backend.Lists.Employees;
+using Backend.Lists.Projects;
+
+namespace Backend.Mappers;
+
+public class MappingProfile : Profile
+{
+    public MappingProfile()
+    {
+        CreateMap<CreateProjectDto, Project>();
+        CreateMap<CreateEmployeeDto, Employee>();
+    }
+}

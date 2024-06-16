@@ -6,7 +6,8 @@ namespace Backend.Services.Implementations;
 
 public class LeaveRequestService : BaseService<LeaveRequest>, ILeaveRequestService
 {
-    public LeaveRequestService(ILeaveRequestRepository repository) : base(repository)
+    public LeaveRequestService(ILeaveRequestRepository repository)
+        : base(repository)
     {
     }
 }

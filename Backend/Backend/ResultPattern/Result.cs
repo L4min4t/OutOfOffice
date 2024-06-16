@@ -1,44 +1,68 @@
 namespace Backend.ResultPattern;
 
-public class Result<T>
+public class Result
 {
-    public T? Value { get; private set; }
-    public bool IsSuccess { get; private set; }
-    public HttpStatusCode StatusCode { get; private set; }
-    public string? ErrorMessage { get; private set; }
-
-    private Result(T? value, bool isSuccess, HttpStatusCode statusCode, string? errorMessage)
+    protected Result(bool isSuccess, List<string> errorMessages = null)
     {
-        Value = value;
-        IsSuccess = isSuccess;
-        StatusCode = statusCode;
-        ErrorMessage = errorMessage;
+        (IsSuccess, ErrorMessages) = (isSuccess, errorMessages ?? new List<string>());
     }
-
-    public static Result<T> Success(T value)
+    
+    public bool IsSuccess { get; protected set; }
+    public List<string> ErrorMessages { get; protected set; }
+    
+    public static Result Success()
     {
-        return new Result<T>(value, true, HttpStatusCode.Ok, null);
+        return new Result(true);
     }
-
-    public static Result<T> Success()
+    
+    public static Result Fail(string errorMessage)
     {
-        return new Result<T>(default, true, HttpStatusCode.Ok, null);
+        return new Result(false, new List<string> { errorMessage });
     }
-
-    public static Result<T> Failure(HttpStatusCode statusCode, string errorMessage)
+    
+    public static Result Fail(List<string> errorMessages)
     {
-        return new Result<T>(default, false, statusCode, errorMessage);
+        return new Result(false, errorMessages);
+    }
+    
+    public static Result<T> Success<T>(T value)
+    {
+        return Result<T>.Success(value);
     }
 }
 
-public enum HttpStatusCode
+public class Result<T> : Result
 {
-    Ok = 200,
-    Created = 201,
-    NoContent = 204,
-    BadRequest = 400,
-    Unauthorized = 401,
-    Forbidden = 403,
-    NotFound = 404,
-    InternalServerError = 500,
+    private Result(bool isSuccess, T value = default, List<string> errorMessages = null)
+        : base(isSuccess, errorMessages)
+    {
+        Value = value;
+    }
+    
+    public T Value { get; }
+    
+    public static Result<T> Success(T value)
+    {
+        return new Result<T>(true, value);
+    }
+    
+    public new static Result<T> Success()
+    {
+        return new Result<T>(true);
+    }
+    
+    public new static Result<T> Fail(string errorMessage)
+    {
+        return new Result<T>(false, default, new List<string> { errorMessage });
+    }
+    
+    public new static Result<T> Fail(List<string> errorMessages)
+    {
+        return new Result<T>(false, default, errorMessages);
+    }
+    
+    public static implicit operator Result<T>(T value)
+    {
+        return Success(value);
+    }
 }

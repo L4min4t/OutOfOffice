@@ -1,40 +1,35 @@
-using System.Linq.Expressions;
-using Backend.Lists;
+using AutoMapper;
 using Backend.Lists.Employees;
 using Backend.Repositories.Interfaces;
 using Backend.ResultPattern;
 using Backend.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Services.Implementations;
 
 public class EmployeeService : BaseService<Employee>, IEmployeeService
 {
-    private readonly UserManager<User> _userManager;
+    private readonly IMapper _mapper;
     private readonly IEmployeeRepository _repository;
-
-    public EmployeeService(IEmployeeRepository repository, UserManager<User> userManager) : base(repository)
+    
+    public EmployeeService(IEmployeeRepository repository, IMapper mapper)
+        : base(repository)
     {
-        _userManager = userManager;
         _repository = repository;
+        _mapper = mapper;
     }
     
-    public virtual async Task<List<Employee>?> FindByConditionAsync(Expression<Func<Employee, bool>> expression)
+    public async Task<Result<Employee>> CreateAsync(CreateEmployeeDto dto)
     {
+        var project = _mapper.Map<Employee>(dto);
         try
         {
-            var entities = await _repository.FindByConditionAsync(expression);
-            if (entities.Any())
-            {
-                return entities;
-            }
-
-            return null;
+            await _repository.CreateAsync(project);
+            
+            return Result.Success(project);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return null;
+            return Result<Employee>.Fail("Failed to create employee!");
         }
     }
-
 }

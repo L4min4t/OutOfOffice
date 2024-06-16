@@ -7,7 +7,8 @@ namespace Backend.Repositories.Implementations;
 public class LeaveRequestRepository : BaseRepository<LeaveRequest>, ILeaveRequestRepository
 
 {
-    public LeaveRequestRepository(ApplicationContext context) : base(context)
+    public LeaveRequestRepository(ApplicationContext context)
+        : base(context)
     {
     }
 }

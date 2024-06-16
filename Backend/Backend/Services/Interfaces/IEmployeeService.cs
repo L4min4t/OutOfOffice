@@ -1,9 +1,9 @@
-using System.Linq.Expressions;
 using Backend.Lists.Employees;
+using Backend.ResultPattern;
 
 namespace Backend.Services.Interfaces;
 
 public interface IEmployeeService : IBaseService<Employee>
 {
-    Task<List<Employee>?> FindByConditionAsync(Expression<Func<Employee, bool>> expression);
+    Task<Result<Employee>> CreateAsync(CreateEmployeeDto dto);
 }

@@ -5,7 +5,7 @@ import {useEffect} from "react";
 import {toast} from "react-toastify";
 
 const Header = () => {
-    const {user, jwtTokens} = useAuthContext();
+    const {user, jwtTokens, logoutUser} = useAuthContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,11 +20,27 @@ const Header = () => {
             <Logo onClick={() => navigate("/")}>Out of Office</Logo>
             <NavLinkContainer>
                 <NavLink onClick={() => navigate("/employees")}>employees</NavLink>
-                <NavLink onClick={() => navigate("/projects")}>projects</NavLink>
-                <NavLink onClick={() => navigate("/leave-requests")}>leave requests</NavLink>
-                <NavLink onClick={() => navigate("/approval-requests")}>approval requests</NavLink>
+                {
+                    user?.role.includes("Admin") || user?.role.includes("HR") ||
+                    user?.role.includes("PM")
+                    ? <NavLink onClick={() => navigate("/projects")}>projects</NavLink>
+                    : <></> 
+                }
+                {
+                    user?.role.includes("Admin") || user?.role.includes("HR") ||
+                    user?.role.includes("PM")
+                        ? <NavLink onClick={() => navigate("/leave-requests")}>leave<br/>requests</NavLink>
+                        : <></>
+                }
+                <NavLink onClick={() => navigate("/approval-requests")}>approval<br/>requests</NavLink>
+                {
+                    user?.role.includes("Admin") || user?.role.includes("HR") ||
+                    user?.role.includes("PM")
+                        ? <NavLink onClick={() => navigate("/leave-requests")}>grant<br/>roles</NavLink>
+                        : <></>
+                }
             </NavLinkContainer>
-            <Greeting>Hello, <UserName onClick={() => navigate("/user")}>{user?.name}</UserName>!</Greeting>
+            <Greeting>Hello, <UserName onClick={() => logoutUser()}>{user?.name}</UserName>!</Greeting>
         </HeaderContainer>);
 }
 export default Header;

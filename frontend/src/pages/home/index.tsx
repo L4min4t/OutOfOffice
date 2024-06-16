@@ -1,7 +1,8 @@
-import React from "react";
+import React, {ChangeEvent, useState} from "react";
+import CreateEmployeeForm from "../../components/createEmployeeForm";
 
 const HomePage = () => {
-    return <>home</>;
+    return <CreateEmployeeForm></CreateEmployeeForm>;
 };
 
 export default HomePage;
